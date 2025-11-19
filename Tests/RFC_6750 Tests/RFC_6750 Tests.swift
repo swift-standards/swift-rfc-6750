@@ -6,7 +6,6 @@
 //
 
 import Testing
-import Foundation
 @testable import RFC_6750
 
 @Suite("RFC 6750 Tests")

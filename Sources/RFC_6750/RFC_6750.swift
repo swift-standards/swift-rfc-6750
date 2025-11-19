@@ -5,7 +5,6 @@
 //  Created by Generated on 2025-07-27.
 //
 
-import Foundation
 
 /// Implementation of RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage
 /// 
