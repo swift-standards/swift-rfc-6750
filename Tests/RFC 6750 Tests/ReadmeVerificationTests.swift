@@ -8,11 +8,11 @@
 import RFC_6750
 import Testing
 
-@Suite("README Verification")
-struct ReadmeVerificationTests {
+@Suite
+struct `README Verification` {
 
-    @Test("README Line 47-56: Creating Bearer Tokens")
-    func creatingBearerTokens() throws {
+    @Test
+    func `README Line 47-56: Creating Bearer Tokens`() throws {
         // Create a Bearer token
         let bearer = try RFC_6750.Bearer(token: "mF_9.B5f-4.1JqM")
 
@@ -22,8 +22,8 @@ struct ReadmeVerificationTests {
         #expect(headerValue == "Bearer mF_9.B5f-4.1JqM")
     }
 
-    @Test("README Line 60-73: Parsing Bearer Tokens from Requests")
-    func parsingBearerTokens() throws {
+    @Test
+    func `README Line 60-73: Parsing Bearer Tokens from Requests`() throws {
         // Parse from Authorization header
         let authHeader = "Bearer mF_9.B5f-4.1JqM"
         let bearer = try RFC_6750.Bearer.parse(from: authHeader)
@@ -40,8 +40,8 @@ struct ReadmeVerificationTests {
         #expect(bearerFromQuery.token == "mF_9.B5f-4.1JqM")
     }
 
-    @Test("README Line 77-89: Generating WWW-Authenticate Challenges")
-    func generatingChallenges() throws {
+    @Test
+    func `README Line 77-89: Generating WWW-Authenticate Challenges`() throws {
         // Create a challenge with error information
         let challenge = RFC_6750.Bearer.Challenge(
             realm: "example",
@@ -60,8 +60,8 @@ struct ReadmeVerificationTests {
         #expect(headerValue.contains("error_description=\"The access token expired\""))
     }
 
-    @Test("README Line 93-99: Parsing WWW-Authenticate Challenges")
-    func parsingChallenges() throws {
+    @Test
+    func `README Line 93-99: Parsing WWW-Authenticate Challenges`() throws {
         let wwwAuth = "Bearer, realm=\"example\", error=\"invalid_token\""
         let challenge = try RFC_6750.Bearer.Challenge.parse(from: wwwAuth)
 
@@ -69,8 +69,8 @@ struct ReadmeVerificationTests {
         #expect(challenge.error == .invalidToken)
     }
 
-    @Test("README Line 103-122: Error Handling")
-    func errorHandling() throws {
+    @Test
+    func `README Line 103-122: Error Handling`() throws {
         // Token validation errors
         do {
             let _ = try RFC_6750.Bearer(token: "")
@@ -94,8 +94,8 @@ struct ReadmeVerificationTests {
         #expect(error.localizedDescription.contains("Requires admin access"))
     }
 
-    @Test("README Line 128-133: Bearer Token Type")
-    func bearerTokenType() throws {
+    @Test
+    func `README Line 128-133: Bearer Token Type`() throws {
         let bearer = try RFC_6750.Bearer(token: "test_token")
         #expect(bearer.token == "test_token")
 
@@ -111,8 +111,8 @@ struct ReadmeVerificationTests {
         #expect(set.contains(bearer))
     }
 
-    @Test("README Line 137-147: Transmission Methods")
-    func transmissionMethods() throws {
+    @Test
+    func `README Line 137-147: Transmission Methods`() throws {
         let bearer = try RFC_6750.Bearer(token: "test_token")
 
         // Authorization header (recommended)
@@ -130,8 +130,8 @@ struct ReadmeVerificationTests {
         #expect(queryParam.value == "test_token")
     }
 
-    @Test("README Line 151-161: Challenge Type")
-    func challengeType() throws {
+    @Test
+    func `README Line 151-161: Challenge Type`() throws {
         let challenge = RFC_6750.Bearer.Challenge(
             realm: "test",
             scope: "read",
@@ -149,8 +149,8 @@ struct ReadmeVerificationTests {
         #expect(parsed.error == .insufficientScope)
     }
 
-    @Test("README Line 165-171: Error Codes")
-    func errorCodes() throws {
+    @Test
+    func `README Line 165-171: Error Codes`() throws {
         #expect(RFC_6750.Bearer.ErrorCode.invalidRequest.rawValue == "invalid_request")
         #expect(RFC_6750.Bearer.ErrorCode.invalidToken.rawValue == "invalid_token")
         #expect(RFC_6750.Bearer.ErrorCode.insufficientScope.rawValue == "insufficient_scope")
@@ -160,8 +160,8 @@ struct ReadmeVerificationTests {
         #expect(allCases.count == 3)
     }
 
-    @Test("README Line 175-184: Error Type")
-    func errorType() throws {
+    @Test
+    func `README Line 175-184: Error Type`() throws {
         let invalidRequest = RFC_6750.Bearer.Error.invalidRequest("test")
         #expect(invalidRequest.errorCode == .invalidRequest)
         #expect(invalidRequest.localizedDescription.contains("Invalid request"))

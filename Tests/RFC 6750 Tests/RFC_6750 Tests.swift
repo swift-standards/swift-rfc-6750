@@ -8,11 +8,11 @@
 import Testing
 @testable import RFC_6750
 
-@Suite("RFC 6750 Tests")
-struct RFC_6750_Tests {
+@Suite
+struct `RFC 6750 Tests` {
 
-    @Test("Bearer token creation and validation")
-    func testBearerTokenCreation() throws {
+    @Test
+    func `Bearer token creation and validation`() throws {
         let bearer = try RFC_6750.Bearer(token: "mF_9.B5f-4.1JqM")
         #expect(bearer.token == "mF_9.B5f-4.1JqM")
         
@@ -37,31 +37,31 @@ struct RFC_6750_Tests {
         }
     }
     
-    @Test("Bearer token Authorization header method")
-    func testAuthorizationHeaderMethod() throws {
+    @Test
+    func `Bearer token Authorization header method`() throws {
         let bearer = try RFC_6750.Bearer(token: "mF_9.B5f-4.1JqM")
         let headerValue = bearer.authorizationHeaderValue()
         #expect(headerValue == "Bearer mF_9.B5f-4.1JqM")
     }
     
-    @Test("Bearer token form parameter method")
-    func testFormParameterMethod() throws {
+    @Test
+    func `Bearer token form parameter method`() throws {
         let bearer = try RFC_6750.Bearer(token: "mF_9.B5f-4.1JqM")
         let formParam = bearer.formParameter()
         #expect(formParam.name == "access_token")
         #expect(formParam.value == "mF_9.B5f-4.1JqM")
     }
     
-    @Test("Bearer token query parameter method")
-    func testQueryParameterMethod() throws {
+    @Test
+    func `Bearer token query parameter method`() throws {
         let bearer = try RFC_6750.Bearer(token: "mF_9.B5f-4.1JqM")
         let queryParam = bearer.queryParameter()
         #expect(queryParam.name == "access_token")
         #expect(queryParam.value == "mF_9.B5f-4.1JqM")
     }
     
-    @Test("Bearer token parsing from Authorization header")
-    func testBearerTokenParsingFromHeader() throws {
+    @Test
+    func `Bearer token parsing from Authorization header`() throws {
         let headerValue = "Bearer mF_9.B5f-4.1JqM"
         let bearer = try RFC_6750.Bearer.parse(from: headerValue)
         #expect(bearer.token == "mF_9.B5f-4.1JqM")
@@ -72,8 +72,8 @@ struct RFC_6750_Tests {
         #expect(bearerWithSpaces.token == "mF_9.B5f-4.1JqM")
     }
     
-    @Test("Bearer token parsing from Authorization header error cases")
-    func testBearerTokenParsingFromHeaderErrors() {
+    @Test
+    func `Bearer token parsing from Authorization header error cases`() {
         // Missing "Bearer " prefix
         #expect(throws: RFC_6750.Bearer.Error.self) {
             try RFC_6750.Bearer.parse(from: "Basic mF_9.B5f-4.1JqM")
@@ -90,15 +90,15 @@ struct RFC_6750_Tests {
         }
     }
     
-    @Test("Bearer token parsing from form parameters")
-    func testBearerTokenParsingFromFormParameters() throws {
+    @Test
+    func `Bearer token parsing from form parameters`() throws {
         let parameters = ["access_token": "mF_9.B5f-4.1JqM", "other_param": "value"]
         let bearer = try RFC_6750.Bearer.parse(fromFormParameters: parameters)
         #expect(bearer.token == "mF_9.B5f-4.1JqM")
     }
     
-    @Test("Bearer token parsing from form parameters error cases")
-    func testBearerTokenParsingFromFormParametersErrors() {
+    @Test
+    func `Bearer token parsing from form parameters error cases`() {
         // Missing access_token parameter
         #expect(throws: RFC_6750.Bearer.Error.self) {
             try RFC_6750.Bearer.parse(fromFormParameters: ["other_param": "value"])
@@ -110,8 +110,8 @@ struct RFC_6750_Tests {
         }
     }
     
-    @Test("Bearer token parsing from query items")
-    func testBearerTokenParsingFromQueryItems() throws {
+    @Test
+    func `Bearer token parsing from query items`() throws {
         let queryItems = [
             URLQueryItem(name: "access_token", value: "mF_9.B5f-4.1JqM"),
             URLQueryItem(name: "other_param", value: "value")
@@ -120,8 +120,8 @@ struct RFC_6750_Tests {
         #expect(bearer.token == "mF_9.B5f-4.1JqM")
     }
     
-    @Test("Bearer token parsing from query items error cases")
-    func testBearerTokenParsingFromQueryItemsErrors() {
+    @Test
+    func `Bearer token parsing from query items error cases`() {
         // Missing access_token parameter
         #expect(throws: RFC_6750.Bearer.Error.self) {
             try RFC_6750.Bearer.parse(fromQueryItems: [URLQueryItem(name: "other_param", value: "value")])
@@ -138,8 +138,8 @@ struct RFC_6750_Tests {
         }
     }
     
-    @Test("Bearer Challenge creation")
-    func testBearerChallengeCreation() {
+    @Test
+    func `Bearer Challenge creation`() {
         let challenge = RFC_6750.Bearer.Challenge()
         #expect(challenge.realm == nil)
         #expect(challenge.scope == nil)
@@ -158,8 +158,8 @@ struct RFC_6750_Tests {
         #expect(challengeWithParams.errorDescription == "Token has expired")
     }
     
-    @Test("Bearer Challenge WWW-Authenticate header generation")
-    func testBearerChallengeHeaderGeneration() {
+    @Test
+    func `Bearer Challenge WWW-Authenticate header generation`() {
         let challenge = RFC_6750.Bearer.Challenge()
         let headerValue = challenge.wwwAuthenticateHeaderValue()
         #expect(headerValue == "Bearer")
@@ -178,8 +178,8 @@ struct RFC_6750_Tests {
         #expect(fullHeaderValue == "Bearer, realm=\"example.com\", scope=\"read write\", error=\"invalid_token\", error_description=\"Token has expired\"")
     }
     
-    @Test("Bearer Challenge parsing from WWW-Authenticate header")
-    func testBearerChallengeParsing() throws {
+    @Test
+    func `Bearer Challenge parsing from WWW-Authenticate header`() throws {
         let headerValue = "Bearer"
         let challenge = try RFC_6750.Bearer.Challenge.parse(from: headerValue)
         #expect(challenge.realm == nil)
@@ -199,31 +199,31 @@ struct RFC_6750_Tests {
         #expect(fullChallenge.errorDescription == "Token has expired")
     }
     
-    @Test("Bearer Challenge parsing with unquoted values")
-    func testBearerChallengeParsingUnquoted() throws {
+    @Test
+    func `Bearer Challenge parsing with unquoted values`() throws {
         let headerValue = "Bearer realm=example.com, scope=read"
         let challenge = try RFC_6750.Bearer.Challenge.parse(from: headerValue)
         #expect(challenge.realm == "example.com")
         #expect(challenge.scope == "read")
     }
     
-    @Test("Bearer Challenge parsing error cases")
-    func testBearerChallengeParsingErrors() {
+    @Test
+    func `Bearer Challenge parsing error cases`() {
         // Missing "Bearer" prefix
         #expect(throws: RFC_6750.Bearer.Error.self) {
             try RFC_6750.Bearer.Challenge.parse(from: "Basic realm=\"example.com\"")
         }
     }
     
-    @Test("ErrorCode descriptions")
-    func testErrorCodeDescriptions() {
+    @Test
+    func `ErrorCode descriptions`() {
         #expect(RFC_6750.Bearer.ErrorCode.invalidRequest.description.contains("missing a required parameter"))
         #expect(RFC_6750.Bearer.ErrorCode.invalidToken.description.contains("expired, revoked, malformed"))
         #expect(RFC_6750.Bearer.ErrorCode.insufficientScope.description.contains("higher privileges"))
     }
     
-    @Test("Bearer Error localized descriptions")
-    func testBearerErrorDescriptions() {
+    @Test
+    func `Bearer Error localized descriptions`() {
         let requestError = RFC_6750.Bearer.Error.invalidRequest("test message")
         #expect(requestError.localizedDescription == "Invalid request: test message")
         #expect(requestError.errorCode == .invalidRequest)
@@ -237,8 +237,8 @@ struct RFC_6750_Tests {
         #expect(scopeError.errorCode == .insufficientScope)
     }
     
-    @Test("Edge case: token with special characters")
-    func testTokenWithSpecialCharacters() throws {
+    @Test
+    func `Edge case: token with special characters`() throws {
         let bearer = try RFC_6750.Bearer(token: "mF_9.B5f-4.1JqM~!@#$%^&*()+={}[]|\\:;\"'<>?")
         #expect(bearer.token == "mF_9.B5f-4.1JqM~!@#$%^&*()+={}[]|\\:;\"'<>?")
         
@@ -248,8 +248,8 @@ struct RFC_6750_Tests {
         #expect(parsed.token == bearer.token)
     }
     
-    @Test("Edge case: very long token")
-    func testVeryLongToken() throws {
+    @Test
+    func `Edge case: very long token`() throws {
         let longToken = String(repeating: "a", count: 1000)
         let bearer = try RFC_6750.Bearer(token: longToken)
         #expect(bearer.token == longToken)
