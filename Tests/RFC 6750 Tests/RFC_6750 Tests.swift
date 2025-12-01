@@ -5,6 +5,7 @@
 //  Created by Generated on 2025-07-27.
 //
 
+import Foundation
 import Testing
 @testable import RFC_6750
 

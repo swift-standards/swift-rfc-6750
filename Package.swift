@@ -22,14 +22,13 @@ let package = Package(
         .library(name: .rfc6750, targets: [.rfc6750]),
     ],
     dependencies: [
-        // Add RFC dependencies here as needed
-        // .package(url: "https://github.com/swift-standards/swift-rfc-1123.git", from: "0.1.0"),
+        .package(url: "https://github.com/swift-standards/swift-incits-4-1986", from: "0.3.0"),
     ],
     targets: [
         .target(
             name: .rfc6750,
             dependencies: [
-                // Add target dependencies here
+                .product(name: "INCITS 4 1986", package: "swift-incits-4-1986"),
             ]
         ),
         .testTarget(

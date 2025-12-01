@@ -5,6 +5,7 @@
 //  Verifies that README code examples actually work
 //
 
+import Foundation
 import RFC_6750
 import Testing
 

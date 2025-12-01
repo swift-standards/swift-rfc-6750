@@ -5,6 +5,7 @@
 //  Created by Generated on 2025-07-27.
 //
 
+public import Foundation
 
 /// Implementation of RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage
 /// 
@@ -29,8 +30,13 @@ public enum RFC_6750 {
         }
         
         /// Creates a Bearer token without validation (for internal use)
-        internal init(uncheckedToken: String) {
-            self.token = uncheckedToken
+        ///
+        /// **Warning**: Bypasses RFC validation. Only use for:
+        /// - Static constants
+        /// - Pre-validated values
+        /// - Internal construction after validation
+        init(__unchecked: Void, token: String) {
+            self.token = token
         }
     }
 }
@@ -74,7 +80,7 @@ extension RFC_6750.Bearer {
             throw Error.invalidToken("Bearer token cannot be empty")
         }
         
-        return RFC_6750.Bearer(uncheckedToken: tokenString)
+        return RFC_6750.Bearer(__unchecked: (), token: tokenString)
     }
     
     /// Parses Bearer token from form parameter
@@ -90,7 +96,7 @@ extension RFC_6750.Bearer {
             throw Error.invalidToken("Bearer token cannot be empty")
         }
         
-        return RFC_6750.Bearer(uncheckedToken: tokenString)
+        return RFC_6750.Bearer(__unchecked: (), token: tokenString)
     }
     
     /// Parses Bearer token from URI query parameter
@@ -107,7 +113,7 @@ extension RFC_6750.Bearer {
             throw Error.invalidToken("Bearer token cannot be empty")
         }
         
-        return RFC_6750.Bearer(uncheckedToken: tokenString)
+        return RFC_6750.Bearer(__unchecked: (), token: tokenString)
     }
 }
 
@@ -231,22 +237,11 @@ extension RFC_6750.Bearer {
     }
     
     /// Errors that can occur during Bearer token operations
-    public enum Error: Swift.Error, Codable, Hashable, Sendable {
+    public enum Error: Swift.Error, Sendable, Equatable {
         case invalidRequest(String)
         case invalidToken(String)
         case insufficientScope(String)
-        
-        public var localizedDescription: String {
-            switch self {
-            case .invalidRequest(let message):
-                return "Invalid request: \(message)"
-            case .invalidToken(let message):
-                return "Invalid token: \(message)"
-            case .insufficientScope(let message):
-                return "Insufficient scope: \(message)"
-            }
-        }
-        
+
         public var errorCode: ErrorCode {
             switch self {
             case .invalidRequest:
@@ -257,5 +252,24 @@ extension RFC_6750.Bearer {
                 return .insufficientScope
             }
         }
+    }
+}
+
+extension RFC_6750.Bearer.Error: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .invalidRequest(let message):
+            return "Invalid request: \(message)"
+        case .invalidToken(let message):
+            return "Invalid token: \(message)"
+        case .insufficientScope(let message):
+            return "Insufficient scope: \(message)"
+        }
+    }
+}
+
+extension RFC_6750.Bearer.Error: LocalizedError {
+    public var errorDescription: String? {
+        description
     }
 }
