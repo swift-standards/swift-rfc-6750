@@ -223,8 +223,7 @@ extension RFC_6750.Bearer {
             )
         }
 
-        private static func extractQuotedValue(from component: String, parameter: String) -> String?
-        {
+        private static func extractQuotedValue(from component: String, parameter: String) -> String? {
             let prefix = "\(parameter)="
             guard component.lowercased().hasPrefix(prefix.lowercased()) else { return nil }
 
