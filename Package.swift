@@ -22,8 +22,7 @@ let package = Package(
         .library(name: .rfc6750, targets: [.rfc6750]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-standards/swift-standards", from: "0.10.0"),
-        .package(url: "https://github.com/swift-standards/swift-incits-4-1986", from: "0.6.3"),
+        .package(path: "../swift-incits-4-1986"),
     ],
     targets: [
         .target(
