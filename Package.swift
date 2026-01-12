@@ -22,13 +22,13 @@ let package = Package(
         .library(name: .rfc6750, targets: [.rfc6750]),
     ],
     dependencies: [
-        .package(path: "../swift-incits-4-1986"),
+        .package(path: "../../swift-foundations/swift-ascii"),
     ],
     targets: [
         .target(
             name: .rfc6750,
             dependencies: [
-                .product(name: "INCITS 4 1986", package: "swift-incits-4-1986"),
+                .product(name: "ASCII", package: "swift-ascii"),
             ]
         ),
         .testTarget(
