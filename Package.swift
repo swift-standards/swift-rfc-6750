@@ -22,7 +22,7 @@ let package = Package(
         .library(name: .rfc6750, targets: [.rfc6750]),
     ],
     dependencies: [
-        .package(path: "../../swift-foundations/swift-ascii"),
+        .package(url: "https://github.com/swift-foundations/swift-ascii.git", from: "0.0.1"),
     ],
     targets: [
         .target(
