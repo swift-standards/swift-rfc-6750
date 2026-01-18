@@ -19,24 +19,18 @@ let package = Package(
         .watchOS(.v26)
     ],
     products: [
-        .library(name: .rfc6750, targets: [.rfc6750]),
+        .library(name: "RFC 6750", targets: ["RFC 6750"])
     ],
     dependencies: [
-        .package(path: "../../swift-foundations/swift-ascii"),
+        .package(path: "../../swift-foundations/swift-ascii")
     ],
     targets: [
         .target(
-            name: .rfc6750,
+            name: "RFC 6750",
             dependencies: [
-                .product(name: "ASCII", package: "swift-ascii"),
+                .product(name: "ASCII", package: "swift-ascii")
             ]
-        ),
-        .testTarget(
-            name: .rfc6750.tests,
-            dependencies: [
-                .rfc6750
-            ]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )
