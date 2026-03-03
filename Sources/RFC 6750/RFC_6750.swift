@@ -18,7 +18,7 @@ public enum RFC_6750 {
         /// Creates a Bearer token
         /// - Parameter token: The access token string
         /// - Throws: `Error.invalidToken` if token is invalid
-        public init(token: String) throws {
+        public init(token: String) throws(Error) {
             let trimmed = token.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty else {
                 throw Error.invalidToken("Token cannot be empty")
@@ -68,7 +68,7 @@ extension RFC_6750.Bearer {
     /// - Parameter headerValue: The Authorization header value
     /// - Returns: Bearer token if valid
     /// - Throws: `Error` for invalid format
-    public static func parse(from headerValue: String) throws -> RFC_6750.Bearer {
+    public static func parse(from headerValue: String) throws(Error) -> RFC_6750.Bearer {
         let trimmed = headerValue.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard trimmed.lowercased().hasPrefix("bearer ") else {
@@ -89,7 +89,7 @@ extension RFC_6750.Bearer {
     /// - Throws: `Error` for missing or invalid token
     public static func parse(
         fromFormParameters parameters: [String: String]
-    ) throws -> RFC_6750.Bearer {
+    ) throws(Error) -> RFC_6750.Bearer {
         guard let tokenString = parameters["access_token"] else {
             throw Error.invalidRequest("access_token parameter is required")
         }
@@ -105,7 +105,7 @@ extension RFC_6750.Bearer {
     /// - Parameter queryItems: URL query items
     /// - Returns: Bearer token if present and valid
     /// - Throws: `Error` for missing or invalid token
-    public static func parse(fromQueryItems queryItems: [URLQueryItem]) throws -> RFC_6750.Bearer {
+    public static func parse(fromQueryItems queryItems: [URLQueryItem]) throws(Error) -> RFC_6750.Bearer {
         guard let tokenItem = queryItems.first(where: { $0.name == "access_token" }),
             let tokenString = tokenItem.value
         else {
@@ -176,7 +176,7 @@ extension RFC_6750.Bearer {
         /// - Parameter headerValue: The WWW-Authenticate header value
         /// - Returns: Bearer.Challenge if valid
         /// - Throws: `Error` for invalid format
-        public static func parse(from headerValue: String) throws -> RFC_6750.Bearer.Challenge {
+        public static func parse(from headerValue: String) throws(Error) -> RFC_6750.Bearer.Challenge {
             let trimmed = headerValue.trimmingCharacters(in: .whitespacesAndNewlines)
 
             guard trimmed.lowercased().hasPrefix("bearer") else {
