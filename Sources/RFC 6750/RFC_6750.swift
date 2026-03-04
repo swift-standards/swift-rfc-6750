@@ -2,10 +2,10 @@
 //  RFC_6750.swift
 //  swift-rfc-6750
 //
-//  Created by Generated on 2025-07-27.
+//  RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage
 //
 
-public import Foundation
+import ASCII
 
 /// Implementation of RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage
 ///
@@ -19,7 +19,7 @@ public enum RFC_6750 {
         /// - Parameter token: The access token string
         /// - Throws: `Error.invalidToken` if token is invalid
         public init(token: String) throws(Error) {
-            let trimmed = token.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmed = String(token.trimming(.ascii.whitespaces))
             guard !trimmed.isEmpty else {
                 throw Error.invalidToken("Token cannot be empty")
             }
@@ -37,6 +37,30 @@ public enum RFC_6750 {
         /// - Internal construction after validation
         init(__unchecked: Void, token: String) {
             self.token = token
+        }
+    }
+}
+
+// MARK: - Query Item
+
+extension RFC_6750 {
+    /// A name-value pair representing a URI query parameter.
+    ///
+    /// Replaces Foundation's `URLQueryItem` for Foundation-free operation.
+    public struct QueryItem: Sendable, Equatable, Hashable {
+        /// The query parameter name
+        public let name: String
+
+        /// The query parameter value (nil if absent)
+        public let value: String?
+
+        /// Creates a query item
+        /// - Parameters:
+        ///   - name: The parameter name
+        ///   - value: The parameter value
+        public init(name: String, value: String?) {
+            self.name = name
+            self.value = value
         }
     }
 }
@@ -69,7 +93,7 @@ extension RFC_6750.Bearer {
     /// - Returns: Bearer token if valid
     /// - Throws: `Error` for invalid format
     public static func parse(from headerValue: String) throws(Error) -> RFC_6750.Bearer {
-        let trimmed = headerValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmed = String(headerValue.trimming(.ascii.whitespaces))
 
         guard trimmed.lowercased().hasPrefix("bearer ") else {
             throw Error.invalidRequest("Authorization header must start with 'Bearer '")
@@ -102,10 +126,10 @@ extension RFC_6750.Bearer {
     }
 
     /// Parses Bearer token from URI query parameter
-    /// - Parameter queryItems: URL query items
+    /// - Parameter queryItems: Query items as name-value pairs
     /// - Returns: Bearer token if present and valid
     /// - Throws: `Error` for missing or invalid token
-    public static func parse(fromQueryItems queryItems: [URLQueryItem]) throws(Error) -> RFC_6750.Bearer {
+    public static func parse(fromQueryItems queryItems: [RFC_6750.QueryItem]) throws(Error) -> RFC_6750.Bearer {
         guard let tokenItem = queryItems.first(where: { $0.name == "access_token" }),
             let tokenString = tokenItem.value
         else {
@@ -177,24 +201,22 @@ extension RFC_6750.Bearer {
         /// - Returns: Bearer.Challenge if valid
         /// - Throws: `Error` for invalid format
         public static func parse(from headerValue: String) throws(Error) -> RFC_6750.Bearer.Challenge {
-            let trimmed = headerValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmed = String(headerValue.trimming(.ascii.whitespaces))
 
             guard trimmed.lowercased().hasPrefix("bearer") else {
                 throw Error.invalidRequest("WWW-Authenticate header must start with 'Bearer'")
             }
 
-            let parameters = String(trimmed.dropFirst(6)).trimmingCharacters(
-                in: .whitespacesAndNewlines
-            )
+            let parameters = String(trimmed.dropFirst(6)).trimming(.ascii.whitespaces)
             var realm: String?
             var scope: String?
             var error: ErrorCode?
             var errorDescription: String?
 
             if !parameters.isEmpty {
-                let components = parameters.components(separatedBy: ",")
+                let components = parameters.split(separator: ",")
                 for component in components {
-                    let trimmedComponent = component.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let trimmedComponent = String(component.trimming(.ascii.whitespaces))
                     if trimmedComponent.lowercased().hasPrefix("realm=") {
                         realm = extractQuotedValue(from: trimmedComponent, parameter: "realm")
                     } else if trimmedComponent.lowercased().hasPrefix("scope=") {
@@ -227,13 +249,11 @@ extension RFC_6750.Bearer {
             let prefix = "\(parameter)="
             guard component.lowercased().hasPrefix(prefix.lowercased()) else { return nil }
 
-            let value = String(component.dropFirst(prefix.count)).trimmingCharacters(
-                in: .whitespacesAndNewlines
-            )
+            let value = String(component.dropFirst(prefix.count)).trimming(.ascii.whitespaces)
             if value.hasPrefix("\"") && value.hasSuffix("\"") {
                 return String(value.dropFirst().dropLast())
             }
-            return value
+            return String(value)
         }
     }
 }
@@ -290,11 +310,5 @@ extension RFC_6750.Bearer.Error: CustomStringConvertible {
         case .insufficientScope(let message):
             return "Insufficient scope: \(message)"
         }
-    }
-}
-
-extension RFC_6750.Bearer.Error: LocalizedError {
-    public var errorDescription: String? {
-        description
     }
 }
