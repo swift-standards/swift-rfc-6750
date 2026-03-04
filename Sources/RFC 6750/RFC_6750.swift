@@ -214,7 +214,17 @@ extension RFC_6750.Bearer {
             var errorDescription: String?
 
             if !parameters.isEmpty {
-                let components = parameters.split(separator: ",")
+                let pBytes = Array(parameters.utf8)
+                var segStart = 0
+                var components: [String] = []
+                for idx in 0..<pBytes.count {
+                    if pBytes[idx] == 0x2C {  // ','
+                        components.append(String(decoding: pBytes[segStart..<idx], as: UTF8.self))
+                        segStart = idx &+ 1
+                    }
+                }
+                components.append(String(decoding: pBytes[segStart..<pBytes.count], as: UTF8.self))
+
                 for component in components {
                     let trimmedComponent = String(component.trimming(.ascii.whitespaces))
                     if trimmedComponent.lowercased().hasPrefix("realm=") {
