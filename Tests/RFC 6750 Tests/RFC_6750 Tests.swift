@@ -5,7 +5,6 @@
 //  Created by Generated on 2025-07-27.
 //
 
-import Foundation
 import Testing
 
 @testable import RFC_6750
@@ -115,8 +114,8 @@ struct `RFC 6750 Tests` {
     @Test
     func `Bearer token parsing from query items`() throws {
         let queryItems = [
-            URLQueryItem(name: "access_token", value: "mF_9.B5f-4.1JqM"),
-            URLQueryItem(name: "other_param", value: "value"),
+            RFC_6750.QueryItem(name: "access_token", value: "mF_9.B5f-4.1JqM"),
+            RFC_6750.QueryItem(name: "other_param", value: "value"),
         ]
         let bearer = try RFC_6750.Bearer.parse(fromQueryItems: queryItems)
         #expect(bearer.token == "mF_9.B5f-4.1JqM")
@@ -127,21 +126,21 @@ struct `RFC 6750 Tests` {
         // Missing access_token parameter
         #expect(throws: RFC_6750.Bearer.Error.self) {
             try RFC_6750.Bearer.parse(fromQueryItems: [
-                URLQueryItem(name: "other_param", value: "value")
+                RFC_6750.QueryItem(name: "other_param", value: "value")
             ])
         }
 
         // access_token parameter with nil value
         #expect(throws: RFC_6750.Bearer.Error.self) {
             try RFC_6750.Bearer.parse(fromQueryItems: [
-                URLQueryItem(name: "access_token", value: nil)
+                RFC_6750.QueryItem(name: "access_token", value: nil)
             ])
         }
 
         // Empty access_token parameter
         #expect(throws: RFC_6750.Bearer.Error.self) {
             try RFC_6750.Bearer.parse(fromQueryItems: [
-                URLQueryItem(name: "access_token", value: "")
+                RFC_6750.QueryItem(name: "access_token", value: "")
             ])
         }
     }
@@ -247,15 +246,15 @@ struct `RFC 6750 Tests` {
     @Test
     func `Bearer Error localized descriptions`() {
         let requestError = RFC_6750.Bearer.Error.invalidRequest("test message")
-        #expect(requestError.localizedDescription == "Invalid request: test message")
+        #expect(requestError.description == "Invalid request: test message")
         #expect(requestError.errorCode == .invalidRequest)
 
         let tokenError = RFC_6750.Bearer.Error.invalidToken("test message")
-        #expect(tokenError.localizedDescription == "Invalid token: test message")
+        #expect(tokenError.description == "Invalid token: test message")
         #expect(tokenError.errorCode == .invalidToken)
 
         let scopeError = RFC_6750.Bearer.Error.insufficientScope("test message")
-        #expect(scopeError.localizedDescription == "Insufficient scope: test message")
+        #expect(scopeError.description == "Insufficient scope: test message")
         #expect(scopeError.errorCode == .insufficientScope)
     }
 

@@ -5,7 +5,7 @@
 //  RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage
 //
 
-import ASCII
+import ASCII_Primitives
 
 /// Implementation of RFC 6750: The OAuth 2.0 Authorization Framework: Bearer Token Usage
 ///
@@ -19,7 +19,7 @@ public enum RFC_6750 {
         /// - Parameter token: The access token string
         /// - Throws: `Error.invalidToken` if token is invalid
         public init(token: String) throws(Error) {
-            let trimmed = String(token.trimming(.ascii.whitespaces))
+            let trimmed = String(token.trimming(where: { $0.isWhitespace }))
             guard !trimmed.isEmpty else {
                 throw Error.invalidToken("Token cannot be empty")
             }
@@ -93,7 +93,7 @@ extension RFC_6750.Bearer {
     /// - Returns: Bearer token if valid
     /// - Throws: `Error` for invalid format
     public static func parse(from headerValue: String) throws(Error) -> RFC_6750.Bearer {
-        let trimmed = String(headerValue.trimming(.ascii.whitespaces))
+        let trimmed = String(headerValue.trimming(where: { $0.isWhitespace }))
 
         guard trimmed.lowercased().hasPrefix("bearer ") else {
             throw Error.invalidRequest("Authorization header must start with 'Bearer '")
@@ -201,13 +201,13 @@ extension RFC_6750.Bearer {
         /// - Returns: Bearer.Challenge if valid
         /// - Throws: `Error` for invalid format
         public static func parse(from headerValue: String) throws(Error) -> RFC_6750.Bearer.Challenge {
-            let trimmed = String(headerValue.trimming(.ascii.whitespaces))
+            let trimmed = String(headerValue.trimming(where: { $0.isWhitespace }))
 
             guard trimmed.lowercased().hasPrefix("bearer") else {
                 throw Error.invalidRequest("WWW-Authenticate header must start with 'Bearer'")
             }
 
-            let parameters = String(trimmed.dropFirst(6)).trimming(.ascii.whitespaces)
+            let parameters = String(trimmed.dropFirst(6)).trimming(where: { $0.isWhitespace })
             var realm: String?
             var scope: String?
             var error: ErrorCode?
@@ -226,7 +226,7 @@ extension RFC_6750.Bearer {
                 components.append(String(decoding: pBytes[segStart..<pBytes.count], as: UTF8.self))
 
                 for component in components {
-                    let trimmedComponent = String(component.trimming(.ascii.whitespaces))
+                    let trimmedComponent = String(component.trimming(where: { $0.isWhitespace }))
                     if trimmedComponent.lowercased().hasPrefix("realm=") {
                         realm = extractQuotedValue(from: trimmedComponent, parameter: "realm")
                     } else if trimmedComponent.lowercased().hasPrefix("scope=") {
@@ -259,7 +259,7 @@ extension RFC_6750.Bearer {
             let prefix = "\(parameter)="
             guard component.lowercased().hasPrefix(prefix.lowercased()) else { return nil }
 
-            let value = String(component.dropFirst(prefix.count)).trimming(.ascii.whitespaces)
+            let value = String(component.dropFirst(prefix.count)).trimming(where: { $0.isWhitespace })
             if value.hasPrefix("\"") && value.hasSuffix("\"") {
                 return String(value.dropFirst().dropLast())
             }

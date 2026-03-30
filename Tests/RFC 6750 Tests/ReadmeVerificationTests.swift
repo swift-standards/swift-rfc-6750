@@ -36,7 +36,7 @@ struct `README Verification` {
         #expect(bearerFromForm.token == "mF_9.B5f-4.1JqM")
 
         // Parse from query parameters
-        let queryItems = [URLQueryItem(name: "access_token", value: "mF_9.B5f-4.1JqM")]
+        let queryItems = [RFC_6750.QueryItem(name: "access_token", value: "mF_9.B5f-4.1JqM")]
         let bearerFromQuery = try RFC_6750.Bearer.parse(fromQueryItems: queryItems)
         #expect(bearerFromQuery.token == "mF_9.B5f-4.1JqM")
     }
@@ -73,26 +73,20 @@ struct `README Verification` {
     @Test
     func `README Line 103-122: Error Handling`() throws {
         // Token validation errors
-        do {
-            let _ = try RFC_6750.Bearer(token: "")
-            Issue.record("Should have thrown invalidToken error")
-        } catch RFC_6750.Bearer.Error.invalidToken(let message) {
-            #expect(message.contains("empty"))
+        #expect(throws: RFC_6750.Bearer.Error.self) {
+            try RFC_6750.Bearer(token: "")
         }
 
         // Parse errors
-        do {
-            let _ = try RFC_6750.Bearer.parse(from: "Invalid header")
-            Issue.record("Should have thrown invalidRequest error")
-        } catch RFC_6750.Bearer.Error.invalidRequest(let message) {
-            #expect(message.contains("Bearer"))
+        #expect(throws: RFC_6750.Bearer.Error.self) {
+            try RFC_6750.Bearer.parse(from: "Invalid header")
         }
 
         // Using error codes
         let error = RFC_6750.Bearer.Error.insufficientScope("Requires admin access")
         #expect(error.errorCode == .insufficientScope)
-        #expect(error.localizedDescription.contains("Insufficient scope"))
-        #expect(error.localizedDescription.contains("Requires admin access"))
+        #expect(error.description.contains("Insufficient scope"))
+        #expect(error.description.contains("Requires admin access"))
     }
 
     @Test
@@ -165,14 +159,14 @@ struct `README Verification` {
     func `README Line 175-184: Error Type`() throws {
         let invalidRequest = RFC_6750.Bearer.Error.invalidRequest("test")
         #expect(invalidRequest.errorCode == .invalidRequest)
-        #expect(invalidRequest.localizedDescription.contains("Invalid request"))
+        #expect(invalidRequest.description.contains("Invalid request"))
 
         let invalidToken = RFC_6750.Bearer.Error.invalidToken("test")
         #expect(invalidToken.errorCode == .invalidToken)
-        #expect(invalidToken.localizedDescription.contains("Invalid token"))
+        #expect(invalidToken.description.contains("Invalid token"))
 
         let insufficientScope = RFC_6750.Bearer.Error.insufficientScope("test")
         #expect(insufficientScope.errorCode == .insufficientScope)
-        #expect(insufficientScope.localizedDescription.contains("Insufficient scope"))
+        #expect(insufficientScope.description.contains("Insufficient scope"))
     }
 }

@@ -22,13 +22,15 @@ let package = Package(
         .library(name: "RFC 6750", targets: ["RFC 6750"])
     ],
     dependencies: [
-        .package(path: "../../swift-foundations/swift-ascii")
+        .package(path: "../../swift-primitives/swift-ascii-primitives"),
+        .package(path: "../../swift-primitives/swift-standard-library-extensions")
     ],
     targets: [
         .target(
             name: "RFC 6750",
             dependencies: [
-                .product(name: "ASCII", package: "swift-ascii")
+                .product(name: "ASCII Primitives", package: "swift-ascii-primitives"),
+                .product(name: "Standard Library Extensions", package: "swift-standard-library-extensions")
             ]
         ),
         .testTarget(
